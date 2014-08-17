@@ -7,4 +7,5 @@ AuthName "Please enter your ID and password"
 AuthType Basic
 require valid-user 
 DirectoryIndex index.php orderHistory.php      
-order deny,allow
+order deny,allow
+redirect /index.html /index.php

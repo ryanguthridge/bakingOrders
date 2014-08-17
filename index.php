@@ -192,7 +192,7 @@
     </form>
     <button onclick="submitForm(event);" class="btn btn-primary hidden-print" id="submitButton"></button>
     <button class="btn btn-danger hidden-print" onclick="clearChanges();">Clear Changes</button>
-    <br>
+    <br><br class="hidden-print">
 	<script>
 		$(function() {
 			$( "#contactDate" ).datepicker({ dateFormat: "yy-mm-dd" });
