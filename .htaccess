@@ -1,0 +1,10 @@
+<Files ~ "^\.(htaccess|htpasswd)$">
+deny from all
+</Files>
+AuthUserFile /home/content/r/y/a/ryanguthridge/html/bakingorders/includes/.htpasswd
+AuthGroupFile /dev/null
+AuthName "Please enter your ID and password"
+AuthType Basic
+require valid-user 
+DirectoryIndex index.php orderHistory.php      
+order deny,allow

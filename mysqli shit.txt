@@ -1,0 +1,27 @@
+	
+			<?php
+                include_once("config.php");
+				
+				/* check connection */
+				if ($mysqli->connect_errno) {
+					printf("Connect failed: %s\n", $mysqli->connect_error);
+					exit();
+				}else{
+					printf("Connected");
+				}
+					
+				if ($result = $mysqli->query($query)) {
+
+					/* fetch associative array */
+					while ($row = $result->fetch_assoc()) {
+						printf("$('#name').val(%s);)'>",$row["uuid"],$row["uuid"],$row["uuid"]);						
+					}		
+
+					/* free result set */
+					$result->free();
+				}else{
+					printf ("Database connect error");
+				}
+				//close db connection
+				$mysqli->close();
+            ?>

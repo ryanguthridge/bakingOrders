@@ -1,0 +1,176 @@
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+    <!-- jQuery Includes -->
+    <script src="jquery-ui/external/jquery/jquery.js"></script>
+    <script src="jquery-ui/jquery-ui.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.theme.min.css" media="screen" />
+
+    <!-- Bootstrap Includes -->
+    <script src="bootstrap/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" media="screen" />
+
+    <!-- Custom JS -->
+    <script src="js/custom.js"></script>
+
+    <script>
+        function generateUIDNotMoreThan1million() {
+            return ("0000" + (Math.random()*Math.pow(36,4) << 0).toString(36)).slice(-4)
+        }
+    </script>
+
+  </head>
+
+
+<body>
+
+
+
+
+<div class="container">
+<br>
+
+    <span id="submitMessage"></span>
+
+    <div class="jumbotron">
+            <h1>Fresh-Bakes Order Form</h1>
+            <p></p>
+    </div>
+
+    <div class="page-header">
+        <h1>Previous Order Information<small> Select to edit</small></h1>
+
+        <script>
+        function submitForm(event){
+
+            event.preventDefault();
+
+            var data = $('submitOrderForm').serialize()
+            $.ajax({
+                    url: response.php,
+                    type: "POST",
+                    dataType: "text",
+                    crossDomain: true
+                })
+                .success(function(data){
+                    $("#submitMessage").html("<div class='alert alert-success' role='alert'><b>Congratulations! The form was successfully submitted</div>");
+                    window.location.href = "#submitMessage";
+                });
+        });
+        </script>
+
+    </div>
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <h3 class="panel-title">Previous Orders</h3>
+        </div>
+        <div class="panel-body">
+
+            <?php
+                include_once("config.php");
+                $results = $mysqli->query("SELECT id FROM order");
+                            //get all records from add_delete_record table
+                            while($row = $results->fetch_assoc())
+                            {
+                            echo '<li id="item_'.$row["id"].'">';
+                            }
+
+                            //close db connection
+                            $mysqli->close();
+            ?>
+
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1>Order Form Information <small>Don't forget to save your work!</small></h1>
+    </div>
+
+    <!-- my good spreadsheet <form action="https://script.google.com/macros/s/AKfycbz-CuhkAYbVz-3dJhkL230GEMDNQwEibxpHNh0n9Rzs6x1v5AUV/exec" method="GET" id="submitOrder" target="hidden_iframe" role="form"> -->
+    <!-- <form action="https://script.google.com/macros/s/AKfycbzxEqicp-jbNQjYLE6g4nx02Mk2j1BHE1S6KXx0mnaHAFHhumXO/exec" method="POST" id="submitOrder" target="hidden_iframe" role="form"> -->
+    <form action="#" id="submitOrderForm"  role="form"> -->
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Customer Information</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>Customer Name</label>
+                    <input type="text" id="name" name="name" class="form-control" placeholder="Customer Name">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">#</span>
+                        <input type="text" id="phone" name="phone" class="form-control" placeholder="Phone Number">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">@</span>
+                        <input type="text" id="email" name="email" class="form-control" placeholder="Email">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Home Address</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">@</span>
+                        <input type="text" id="address" name="address" class="form-control" placeholder="Address">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Order Information</h3>
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label>UUID</label>
+                    <input type="text" id="UUID" name="UUID" class="form-control" placeholder="UUID" readonly>
+                </div>
+                <script>
+                    var guid = generateUIDNotMoreThan1million();
+                    $("#UUID").val(guid);
+                </script>
+                <div class="form-group">
+                    <label>Order Cost</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="number" id="cost" name="cost" class="form-control" placeholder="Order Cost">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Contact Date</label>
+                    <input type="date" id="contactDate" name="contactDate" class="form-control" placeholder="mm/dd/yyyy">
+                </div>
+                <div class="form-group">
+                    <label>Order Due Date</label>
+                    <input type="date" id="dueDate" name="dueDate" class="form-control" placeholder="mm/dd/yyyy">
+                </div>
+                <div class="form-group">
+                    <label>Order Items</label>
+                    <textarea id="orderItems" name="orderItems" class="form-control" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Notes</label>
+                    <textarea id="notes" name="notes" class="form-control" rows="2"></textarea>
+                </div>
+            </div>
+        </div>
+    </form>
+    <button onclick="submitForm(event);" class="btn btn-primary">Save Work</button>
+    <button class="btn btn-danger" onclick="clearChanges();">Clear Changes</button>
+    <br><br>
+</div>
+</body>
+</html>
+

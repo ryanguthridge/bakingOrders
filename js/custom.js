@@ -1,0 +1,3 @@
+function clearChanges(){
+    location.reload();
+}
