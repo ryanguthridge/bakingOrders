@@ -6,12 +6,12 @@
     <!-- jQuery Includes -->
     <script src="jquery-ui/external/jquery/jquery.js"></script>
     <script src="jquery-ui/jquery-ui.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css" media="screen" />
-    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.theme.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.min.css" />
+    <link rel="stylesheet" type="text/css" href="jquery-ui/jquery-ui.theme.min.css" />
 
     <!-- Bootstrap Includes -->
     <script src="bootstrap/js/bootstrap.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css" />
 	
     <!-- Custom JS -->
     <script src="js/custom.js"></script>
@@ -81,8 +81,8 @@
 
     <span id="submitMessage"></span>
 
-    <div style="background-color: #428bca" class="jumbotron">
-            <h1 style="color: white">Fresh-Bakes Order Form</h1>
+    <div style="background-color: #428bca" class="jumbotron hidden-print">
+            <h1 style="color: white" class="hidden-print">Fresh-Bakes Order Form</h1>
 	</div>
 		<script>
 			function generateUUID(){
@@ -96,13 +96,13 @@
 			};
 		</script>
     
-    <div class="page-header">
+    <div class="page-header hidden-print">
         <h1>Order Form Information <small>Don't forget to save your work!</small></h1>
     </div>
     <form method="POST" id="submitOrderForm"  role="form">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Customer Information</h3>
+                <h3 class="panel-title hidden-print">Customer Information</h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">
@@ -134,10 +134,10 @@
         </div>
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title">Order Information</h3>
+                <h3 class="panel-title hidden-print">Order Information</h3>
             </div>
             <div class="panel-body">
-				<div class="form-group">
+				<div class="form-group hidden-print">
                     <label>Order Id</label>
                     <div class="input-group">
                         <span class="input-group-addon">#</span>
@@ -190,9 +190,9 @@
             </div>
         </div>
     </form>
-    <button onclick="submitForm(event);" class="btn btn-primary" id="submitButton"></button>
-    <button class="btn btn-danger" onclick="clearChanges();">Clear Changes</button>
-    <br><br>
+    <button onclick="submitForm(event);" class="btn btn-primary hidden-print" id="submitButton"></button>
+    <button class="btn btn-danger hidden-print" onclick="clearChanges();">Clear Changes</button>
+    <br>
 	<script>
 		$(function() {
 			$( "#contactDate" ).datepicker({ dateFormat: "yy-mm-dd" });
