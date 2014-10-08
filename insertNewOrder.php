@@ -15,11 +15,12 @@ if($_POST){
 		$orderItems		= filter_var($_POST["orderItems"],FILTER_SANITIZE_STRING);
 		$notes			= filter_var($_POST["notes"],FILTER_SANITIZE_STRING);
 		$paid			= filter_var($_POST["paid"],FILTER_SANITIZE_STRING);
+		$rentalFee		= filter_var($_POST["rentalFee"],FILTER_SANITIZE_STRING);
+		$deliveryFee	= filter_var($_POST["deliveryFee"],FILTER_SANITIZE_STRING);
+		$rentalItems	= filter_var($_POST["rentalItems"],FILTER_SANITIZE_STRING);
+		$totalCost		= filter_var($_POST["totalCost"],FILTER_SANITIZE_STRING);
 	  
-		// Insert sanitize string in record
-		//$insert_row = $mysqli->query("INSERT INTO orders name, phone, $email, $address, $cost, $contactDate, $dueDate, $orderItems, $notes");
-		
-		$query = "INSERT INTO orders (uuid,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes,paid) VALUES ('$uuid', '$name', '$phone','$email','$address','$cost','$contactDate','$dueDate','$orderItems','$notes','$paid');";
+		$query = "INSERT INTO orders (uuid,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes,paid,rentalFee,deliveryFee,rentalItems,totalCost) VALUES ('$uuid', '$name', '$phone','$email','$address','$cost','$contactDate','$dueDate','$orderItems','$notes','$paid','$rentalFee','$deliveryFee','$rentalItems','$totalCost');";
 		$result = $mysqli->query($query);
 		
 		if(!$result){

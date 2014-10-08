@@ -11,10 +11,6 @@ $sql="INSERT INTO order FROM order WHERE id = '".$q."'";
 $result = mysqli_query($con,$sql);
 
 
-
-
-
-
 echo "<table border='1'>
 <tr>
 <th>Firstname</th>

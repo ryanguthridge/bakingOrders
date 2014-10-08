@@ -12,8 +12,6 @@
 	}
 	//MySQLi query
 	$query = "SELECT id,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes FROM orders WHERE id = '".$q."'";
-
-	//$query = "SELECT dueDate,name,phone,cost,address,uuid FROM orders";
 		
 	if ($result = $mysqli->query($query)) {
 

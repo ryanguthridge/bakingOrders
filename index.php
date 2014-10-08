@@ -26,6 +26,59 @@
 		}
 	</script>
 	<script>
+		function deleteOrder(event){
+			event.preventDefault();
+			
+			var currentUUIDToDelete = $("#uuid").val();
+
+				$.post( "deleteOrder.php", { uuid: currentUUIDToDelete })
+                .success(function(data){
+				
+					$("#submitMessage").html("<div class='alert alert-warning' role='alert'><p align='center'><b>Nice work, ya dingus</b>! The order was successfully deleted, you will be redirected to <a href='orderGrid.php'>Order History</a> in 4 seconds.</p></div>");
+						window.location.href = "#submitMessage";
+						
+					setTimeout(function(){
+						window.location.href= "orderGrid.php";
+					}, 4000);
+                    
+                })
+				.fail(function(data){
+					$("#submitMessage").html("<div class='alert alert-danger' role='alert'><b>Uh oh</b>! Their was a problem deleting the thing!</div>");
+                    window.location.href = "#submitMessage";
+				});
+        };
+	</script>
+	<script>
+		function calculateTotalCost(event){
+			
+			event.preventDefault();
+		
+			var interCost = $("#cost").val();
+			var interRentalFee = $("#rentalFee").val();
+			var interDeliveryFee = $("#deliveryFee").val();
+			
+			finalCost = parseFloat(interCost);
+			finalRentalFee = parseFloat(interRentalFee);
+			finalDeliveryFee = parseFloat(interDeliveryFee);
+			
+			var finalTotalCost;
+			var finalTotalCostDec;
+			var finalTotalCostWithTax;
+			
+			finalTotalCost = (finalCost + finalRentalFee + finalDeliveryFee);
+			
+			var tax = (finalTotalCost * .06);
+			var taxDecimal = tax.toFixed(2);
+			$("#tax").val(taxDecimal);
+			
+			finalTotalCostWithTax = parseFloat(finalTotalCost) + parseFloat(taxDecimal);
+			
+			finalTotalCostDec = finalTotalCostWithTax.toFixed(2);
+			
+			$("#totalCost").val(finalTotalCostDec);
+		};
+	</script>
+	<script>
 		var orderUpdate = false;
 		
         function submitForm(event){
@@ -38,10 +91,15 @@
 			var email = $("#email").val();
 			var address = $("#address").val();
 			var cost = $("#cost").val();
+			var totalCost = $("totalCost").val();
 			var contactDate = $("#contactDate").val();
 			var dueDate = $("#dueDate").val();
-			var orderItems = $("#orderItems").val();
+			var orderItems = $("orderItems").val();
 			var notes = $("#notes").val();
+			var deliveryFee = $("deliveryFee").val();
+			var rentalFee = $("rentalFee").val();
+			var rentalItems = $("rentalItems").val();					
+			var paid = $("paid").val();
 
 			//var post_data = {'name':name,'phone':phone,'email':email,'address':address,'cost':cost,'contactDate':contactDate,'dueDate':dueDate,'orderItems':orderItems,'notes':notes};
 			var post_data = $("#submitOrderForm").serializeArray();
@@ -60,11 +118,17 @@
 					data: post_data
                 })
                 .success(function(data){
-                    $("#submitMessage").html("<div class='alert alert-success' role='alert'><b>Congratulations! The form was successfully submitted, <a href='orderGrid.php'>Click Here</a> to see history.</div>");
-                    window.location.href = "#submitMessage";
+				
+					$("#submitMessage").html("<div class='alert alert-success' role='alert'><p align='center'><b>Congratulations</b>! The form was successfully submitted, you will be redirected to <a href='orderGrid.php'>Order History</a> in 4 seconds.</p></div>");
+						window.location.href = "#submitMessage";
+						
+					setTimeout(function(){
+						window.location.href= "orderGrid.php";
+					}, 4000);
+                    
                 })
 				.fail(function(data){
-					$("#submitMessage").html("<div class='alert alert-danger' role='alert'><b>Uh oh! Their was a problem submitting the form</div>");
+					$("#submitMessage").html("<div class='alert alert-danger' role='alert'><b>Uh oh</b>! Their was a problem submitting the form</div>");
                     window.location.href = "#submitMessage";
 				});
         };
@@ -80,10 +144,6 @@
 <div class="container">
 
     <span id="submitMessage"></span>
-
-    <div style="background-color: #428bca" class="jumbotron hidden-print">
-            <h1 style="color: white" class="hidden-print">Fresh-Bakes Order Form</h1>
-	</div>
 		<script>
 			function generateUUID(){
 				var d = new Date().getTime();
@@ -102,11 +162,11 @@
     <form method="POST" id="submitOrderForm"  role="form">
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title hidden-print">Customer Information</h3>
+                <h3 class="panel-title hidden-print"><span class="glyphicon glyphicon-user"></span> Customer Information</h3>
             </div>
             <div class="panel-body">
                 <div class="form-group">
-                    <label>Customer Name</label>
+                    <label>Customer Name - place an asterisk before the name to indicate a Draft order</label>
                     <input type="text" id="name" name="name" class="form-control" placeholder="Customer Name">
                 </div>
                 <div class="form-group">
@@ -134,14 +194,14 @@
         </div>
         <div class="panel panel-primary">
             <div class="panel-heading">
-                <h3 class="panel-title hidden-print">Order Information</h3>
+                <h3 class="panel-title hidden-print"><span class="glyphicon glyphicon-calendar"></span> Order Information</h3>
             </div>
             <div class="panel-body">
 				<div class="form-group hidden-print">
                     <label>Order Id</label>
                     <div class="input-group">
                         <span class="input-group-addon">#</span>
-                        <input type="text" id="uuid" name="uuid" class="form-control" placeholder="UUID" value="">
+                        <input type="text" id="uuid" name="uuid" class="form-control" placeholder="UUID" value="" readonly>
                     </div>
 					<script>
 						//Set the unique ID
@@ -157,13 +217,6 @@
 					</script>
                 </div>
                 <div class="form-group">
-                    <label>Order Cost</label>
-                    <div class="input-group">
-                        <span class="input-group-addon">$</span>
-                        <input type="text" id="cost" name="cost" class="form-control" placeholder="Order Cost">
-                    </div>
-                </div>
-                <div class="form-group">
                     <label>Contact Date</label>
                     <input type="text" id="contactDate" name="contactDate" class="form-control" placeholder="yy/mm/dd">
                 </div>
@@ -173,13 +226,69 @@
                 </div>
                 <div class="form-group">
                     <label>Order Items</label>
-                    <input id="orderItems" name="orderItems" class="form-control">
-                </div>
-                <div class="form-group">
+                    <input id="orderItems" name="orderItems" class="form-control" placeholder="Enter a comma separated list of items here">
+                </div>			
+				<div class="form-group">
+                    <label>Rental Items</label>
+                    <input id="rentalItems" name="rentalItems" class="form-control" placeholder="Enter a comma separated list of rental items here">
+                </div>			
+				<div class="form-group">
                     <label>Notes</label>
-                    <input id="notes" name="notes" class="form-control">
+                    <input id="notes" name="notes" class="form-control" placeholder="Enter any notes about the order here">
                 </div>
-				 <div class="form-group">
+				
+            </div>
+        </div>
+		<div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title hidden-print"><span class="glyphicon glyphicon-credit-card"></span> Pricing Information</h3>
+            </div>
+            <div class="panel-body">
+				<div class="form-group">
+                    <label>Order Cost</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" id="cost" name="cost" class="form-control" placeholder="Order Cost">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label>Rental Fee</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" id="rentalFee" name="rentalFee" class="form-control" placeholder="Rental Fee">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label>Delivery Fee</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" id="deliveryFee" name="deliveryFee" class="form-control" placeholder="Delivery Fee">
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label>Tax</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" id="tax" name="tax" class="form-control" placeholder="taxes" readonly>
+                    </div>
+                </div>
+				<div class="form-group">
+                    <label>Total Cost</label>
+                    <div class="input-group">
+                        <span class="input-group-addon">$</span>
+                        <input type="text" id="totalCost" name="totalCost" class="form-control" placeholder="Total Cost">
+                    </div>
+                </div>
+				<button onclick="calculateTotalCost(event);" class="btn btn-success"><span class="glyphicon glyphicon-retweet"></span> Re-calcuate Total & Taxes</button>
+				<br>
+			</div>
+		</div>
+		<div id="paidOrNotContainer" class="panel">
+            <div class="panel-heading">
+                <h3 class="panel-title hidden-print"><span class="glyphicon glyphicon-warning-sign"></span> Payment Received</h3>
+            </div>
+            <div class="panel-body">
+				<div class="form-group">
                     <label>Paid?</label>
                     <!-- <input id="paid" name="paid" class="form-control"> -->
 					<select id="paid" name="paid" class="form-control">
@@ -187,11 +296,30 @@
 						<option>True</option>						
 					</select>
                 </div>
-            </div>
-        </div>
+			</div>
+			<script>
+				$(function(){
+					var paidOrNot = $("#paid").val();
+						
+					if(paidOrNot === "False"){
+						$("#paidOrNotContainer").removeClass("panel-primary");
+						$("#paidOrNotContainer").addClass("panel-danger");
+					}else{
+						$("#paidOrNotContainer").removeClass("panel-danger");
+						$("#paidOrNotContainer").addClass("panel-primary");
+					}
+					
+					//Make this page active
+					$("#newOrderListItem").addClass("active");
+					$("#orderGridListItem").removeClass("active");
+					$("#orderHistoryListItem").removeClass("active");					
+				});
+			</script>
+		</div>
     </form>
     <button onclick="submitForm(event);" class="btn btn-primary hidden-print" id="submitButton"></button>
-    <button class="btn btn-danger hidden-print" onclick="clearChanges();">Clear Changes</button>
+    <button class="btn btn-warning hidden-print" onclick="clearChanges();">Clear Changes</button>
+	<button class="btn btn-danger hidden-print" onclick="deleteOrder(event);"><span class="glyphicon glyphicon-trash"></span></button>
     <br><br class="hidden-print">
 	<script>
 		$(function() {
@@ -206,9 +334,11 @@
 </body>
 </html>
 <?php
-	include_once("config.php");
 	$search = $_GET["search"];
 		if($search != ""){
+		
+		include_once("config.php");
+		
 			/* check connection */
 			if ($mysqli->connect_errno) {
 				printf("Connect failed: %s\n", $mysqli->connect_error);
@@ -217,7 +347,7 @@
 				//printf("Connected");
 			}
 			
-			$query = 'SELECT uuid,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes,paid FROM orders WHERE uuid = "'.$search.'"';
+			$query = 'SELECT uuid,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes,deliveryFee,rentalFee,rentalItems,paid,totalCost FROM orders WHERE uuid = "'.$search.'"';
 				
 			if ($result = $mysqli->query($query)) {
 
@@ -232,6 +362,10 @@
 					printf("<script>$(\"#contactDate\").val(\"%s\")</script>",$row["contactDate"]);
 					printf("<script>$(\"#dueDate\").val(\"%s\")</script>",$row["dueDate"]);
 					printf("<script>$(\"#orderItems\").val(\"%s\")</script>",$row["orderItems"]);
+					printf("<script>$(\"#deliveryFee\").val(\"%s\")</script>",$row["deliveryFee"]);
+					printf("<script>$(\"#rentalFee\").val(\"%s\")</script>",$row["rentalFee"]);
+					printf("<script>$(\"#rentalItems\").val(\"%s\")</script>",$row["rentalItems"]);					
+					printf("<script>$(\"#totalCost\").val(\"%s\")</script>",$row["totalCost"]);	
 					printf("<script>$(\"#notes\").val(\"%s\")</script>",$row["notes"]);
 					printf("<script>$(\"#paid\").val(\"%s\")</script>",$row["paid"]);
 				}
@@ -250,7 +384,7 @@
 			//close db connection	
 			$mysqli->close();
 		}else{
-			echo("<script>");
+			echo("<script>");			
 			echo("$(\"#submitButton\").text(\"Save Order\");");
 			echo("</script>");
 		}

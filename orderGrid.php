@@ -17,7 +17,7 @@
 	<script src="datatables/js/jquery.dataTables.min.js"></script>
     <link rel="stylesheet" type="text/css" href="datatables/css/jquery.dataTables.min.css" media="screen" />
 	<link rel="stylesheet" type="text/css" href="datatables/css/jquery.dataTables_themeroller.css" media="screen" />
-	
+
     <!-- Custom JS -->
     <script src="js/custom.js"></script>
 	
@@ -46,11 +46,6 @@
 	<br>
 
 	<div class="container">
-	
-	<div style="background-color: #428bca" class="jumbotron">
-            <h1 style="color: white">Fresh-Bakes Order Form</h1>
-            <p style="color: white">Fill out all of the forms, ya dingus!</p>
-    </div>
 
 	<div class="panel panel-primary">
 			<div class="panel-heading">
@@ -68,7 +63,7 @@
 						
 					}
 					
-					$query = "SELECT uuid,name,phone,email,address,cost,contactDate,dueDate,orderItems,notes,paid FROM orders";
+					$query = "SELECT uuid,name,phone,email,address,totalCost,contactDate,dueDate,orderItems,notes,paid FROM orders";
 						
 					if ($result = $mysqli->query($query)) {
 						
@@ -94,16 +89,37 @@
 						
 						/* fetch associative array */
 						while ($row = $result->fetch_assoc()) {
-						echo("<tr>");
+						
+						$orderItemList = $row[orderItems];
+						$orderItemListArray = explode(",", $orderItemList);
+						
+							$tempTitle = $row[name];
+							
+							if($tempTitle[0] == "*"){
+								printf("<tr style='background-color: #FFC8BB;'>");
+							}else{
+								printf("<tr>");
+							}
+							
+							
 							printf("<td><a href='index.php?search=%s'>%s</a></td>",$row["uuid"],$row["name"]);
 							printf("<td>%s</td>",$row["dueDate"]);
 							printf("<td>%s</td>",$row["phone"]);
 							printf("<td><a href='mailto:%s'>%s</a></td>",$row["email"],$row["email"]);
 							//printf("<td>%s</td>",$row["address"]);
-							printf("<td>$%s</td>",$row["cost"]);
+							printf("<td>$%s</td>",$row["totalCost"]);
 							//printf("<td>%s</td>",$row["contactDate"]);
 							//printf("<td>%s</td>",$row["dueDate"]);
-							printf("<td>%s</td>",$row["orderItems"]);
+							
+								//Adding a for loop for the display of items
+								//printf("<td>%s</td>",$row["orderItems"]);
+								printf("<td>");
+								foreach ($orderItemListArray as $items) {
+								   echo "<span style='color: #bf5c8d' class='glyphicon glyphicon-asterisk'></span> $items <br>";
+								}
+								printf("</td>");
+								
+							
 							printf("<td>%s</td>",$row["notes"]);
 							//printf("<td>%s</td>",$row["uuid"]);
 							printf("<td>%s</td>",$row["paid"]);
@@ -127,5 +143,15 @@
 			</div>
 	</div>
 	</div>
+	
+	<script>
+		$(function(){
+			//Make this page active
+			$("#newOrderListItem").removeClass("active");
+			$("#orderGridListItem").addClass("active");
+			$("#orderHistoryListItem").removeClass("active");					
+		});
+	</script>
+	
 </body>
 </html>
